@@ -1,0 +1,35 @@
+services:
+  sensevoice-asr:
+    build: .
+    container_name: sensevoice-apis
+    restart: always
+    ports:
+      - "8022:8000"
+    volumes:
+      - ./main_api.py:/app/main_api.py
+      - ./models:/app/models
+      - ./configs:/app/configs
+    # 强制重置入口，确保直接执行脚本
+    entrypoint: ["python", "main_api.py"]
+    # 使用 > 符号，可以将下面的多行文本合并为一行长字符串作为参数
+    command: >
+      --sense-voice /app/models/model.int8.onnx
+      --tokens /app/models/tokens.txt
+      --silero-vad-model /app/models/silero_vad.onnx
+      --language auto
+      --use-itn 1
+      --vad-threshold 0.45
+      --vad-min-silence 0.4
+      --vad-min-speech 0.25
+      --vad-max-speech 3.5
+      --num-threads 2
+      --mapping-file /app/configs/mapping.json
+      --filler-words-file /app/configs/filler_words.txt
+      --host 0.0.0.0
+      --port 8000
+    mem_limit: 4096m
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

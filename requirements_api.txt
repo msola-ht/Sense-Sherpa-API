@@ -1,0 +1,18 @@
+# SenseVoice API 依赖配置
+#
+# 作者信息:
+#     作者名称: HeGenAI
+#     所属机构: 老何的AIGC研究室
+#     微信: hlsaig
+
+# 核心推理引擎
+sherpa-onnx>=1.10.30
+
+# API 框架与异步服务器
+fastapi
+uvicorn
+pydantic
+python-multipart
+
+# 数据处理
+numpy>=1.26.4

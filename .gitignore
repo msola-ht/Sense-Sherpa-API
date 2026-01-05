@@ -1,0 +1,18 @@
+# 排除 models 目录内容（保留目录结构）
+models/*
+
+# 常见的忽略规则
+node_modules/
+.DS_Store
+*.log
+.env
+.env.local
+
+# 排除 Claude 配置目录
+.claude/
+
+# 排除副本文件
+main_api - 副本.py
+
+# 排除 other 目录（废弃文件存档）
+other/

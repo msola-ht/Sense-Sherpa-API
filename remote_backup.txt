@@ -1,0 +1,2 @@
+origin	https://github.com/msola-ht/Sense-Sherpa-API.git (fetch)
+origin	https://github.com/msola-ht/Sense-Sherpa-API.git (push)
