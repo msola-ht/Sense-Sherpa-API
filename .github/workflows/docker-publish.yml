@@ -1,0 +1,89 @@
+name: Docker Publish
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DOCKER_IMAGE: lunare/sense-sherpa-api
+
+jobs:
+  build-amd64:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout 代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 登录 Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 构建并推送 AMD64 镜像
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:latest-amd64
+            ${{ env.DOCKER_IMAGE }}:amd64
+          labels: |
+            org.opencontainers.image.title=SenseVoice ASR API
+            org.opencontainers.image.description=基于 Sherpa-ONNX 的语音识别 API
+            org.opencontainers.image.arch=amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-arm64:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout 代码
+        uses: actions/checkout@v4
+
+      - name: 设置 QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: 设置 Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 登录 Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 构建并推送 ARM64 镜像
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:latest-arm64
+            ${{ env.DOCKER_IMAGE }}:arm64
+          labels: |
+            org.opencontainers.image.title=SenseVoice ASR API
+            org.opencontainers.image.description=基于 Sherpa-ONNX 的语音识别 API
+            org.opencontainers.image.arch=arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -57,11 +57,39 @@ with open("audio.mp3", "rb") as f:
 
 ## Docker 部署
 
+### 使用预构建镜像（推荐）
+
+项目提供两个独立架构的镜像版本：
+
+**AMD64 版本** (Intel/AMD 处理器)
+```bash
+docker pull lunare/sense-sherpa-api:amd64
+
+docker run -d \
+  --name sensevoice-asr \
+  -p 8000:8000 \
+  -v $(pwd)/models:/app/models \
+  lunare/sense-sherpa-api:amd64
+```
+
+**ARM64 版本** (Apple Silicon/树莓派)
+```bash
+docker pull lunare/sense-sherpa-api:arm64
+
+docker run -d \
+  --name sensevoice-asr \
+  -p 8000:8000 \
+  -v $(pwd)/models:/app/models \
+  lunare/sense-sherpa-api:arm64
+```
+
+### 使用 Docker Compose
+
 ```bash
 # 启动服务
 docker-compose up -d
 
-# 访问 API
+# 访问 API 文档
 curl http://localhost:8022/docs
 ```
 
